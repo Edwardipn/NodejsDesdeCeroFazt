@@ -25,19 +25,22 @@ app.post('/productos', (req, res) => {
 app.put('/productos/:id', (req, res) => {
     const productoEncontrado = productos.find(p => p.id === parseInt(req.params.id));
     if (productoEncontrado) {
-        Object.assign(productoEncontrado, req.body);
-        res.send(productoEncontrado);
+        console.log('Actualizando producto con id:', req.params.id);
+        productos = productos.map(p => p.id === parseInt(req.params.id) ? { ...p, ...req.body } : p);
+        const productoActualizado = productos.find(p => p.id === parseInt(req.params.id));
+        console.log('Datos del producto actualizado:', productoActualizado);
+        res.json({ message: 'Producto actualizado con id: ' + req.params.id, producto: productoActualizado });
     } else {
-        res.status(404).send('Producto no encontrado');
+        res.status(404).json({ error: 'Producto no encontrado' });
     }
 });
 
 app.delete('/productos/:id', (req, res) => {
     const productoEncontrado = productos.find(p => p.id === parseInt(req.params.id));
     if (productoEncontrado) {
-        console.log('Deleting product with id:', req.params.id);
+        console.log('Eliminando producto con id:', req.params.id);
         productos = productos.filter(p => p.id !== parseInt(req.params.id));
-        console.log('Productos after delete:', productos);
+        console.log('Productos después de eliminar:', productos);
         res.json({ message: 'Producto eliminado con id: ' + req.params.id });
     } else {
         res.status(404).json({ error: 'Producto no encontrado' });
@@ -47,9 +50,9 @@ app.delete('/productos/:id', (req, res) => {
 app.get('/productos/:id', (req, res) => {
     const productoEncontrado = productos.find(p => p.id === parseInt(req.params.id));
     if (productoEncontrado) {
-        res.send(productoEncontrado);
+        res.json(productoEncontrado);
     } else {
-        res.status(404).send('Producto no encontrado');
+        res.status(404).json({ error: 'Producto no encontrado' });
     }
 });
 
